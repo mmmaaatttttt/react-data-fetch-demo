@@ -3,12 +3,17 @@ import Pokemon from "./Pokemon";
 
 function PokemonList() {
   const [pokemonList, setPokemon] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const catchSomeOfThem = async () => {
-      let response = await fetch("https://pokeapi.co/api/v2/pokemon");
-      let data = await response.json();
-      setPokemon(data.results);
+      try {
+        let response = await fetch("https://pokeapi.co/api/v2/pokemon");
+        let data = await response.json();
+        setPokemon(data.results);
+      } catch(err) {
+        setError(err);
+      }
     };
 
     catchSomeOfThem();
@@ -20,6 +25,7 @@ function PokemonList() {
       {pokemonList.map(pokemon => (
         <Pokemon name={pokemon.name} url={pokemon.url} key={pokemon.name} />
       ))}
+      {error ? <p>{error.message}</p> : null}
     </div>
   );
 }
